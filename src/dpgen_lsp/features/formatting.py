@@ -1,4 +1,4 @@
-"""JSON formatting provider.""der.\"\"\"
+"""JSON formatting provider."""
 
 import json
 from typing import Any
