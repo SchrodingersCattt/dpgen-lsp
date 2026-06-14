@@ -1,0 +1,28 @@
+{
+  "schema": "OpenQCLspCapabilities",
+  "version": 1,
+  "software": "dpgen",
+  "capabilities": [
+    "diagnostics",
+    "rich-diagnostics",
+    "completion",
+    "hover",
+    "symbols",
+    "fix-preview",
+    "llm-wiki",
+    "openqc-context"
+  ],
+  "agentCli": {
+    "operations": [
+      "capabilities",
+      "check",
+      "context",
+      "complete",
+      "hover",
+      "symbols",
+      "fix"
+    ],
+    "jsonFormat": true,
+    "failOnBlocking": true
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Diagnostic Engine v1",
+  "version": "1.0",
+  "type": "object",
+  "properties": {
+    "uri": {"type": "string"},
+    "operation": {"type": "string"},
+    "ok": {"type": "boolean"},
+    "version": {"type": "string"},
+    "software": {"type": "string"},
+    "diagnostic_engine": {"type": "string"},
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {"type": "string"},
+          "severity": {"enum": ["error", "warning", "information", "hint"]},
+          "category": {
+            "enum": [
+              "syntax",
+              "schema",
+              "type/value",
+              "cross-file reference",
+              "semantic consistency",
+              "preflight/runtime-risk",
+              "style/deprecation"
+            ]
+          },
+          "confidence": {"type": "number"},
+          "source": {"type": "string"},
+          "range": {
+            "type": "object",
+            "properties": {
+              "start": {"type": "object", "properties": {"line": {"type": "integer"}, "character": {"type": "integer"}}},
+              "end": {"type": "object", "properties": {"line": {"type": "integer"}, "character": {"type": "integer"}}}
+            }
+          },
+          "message": {"type": "string"},
+          "blocking": {"type": "boolean"},
+          "fix_hints": {"type": "array", "items": {"type": "string"}},
+          "manual_ref": {"type": "string"}
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "count": {"type": "integer"},
+        "blocking": {"type": "integer"},
+        "errors": {"type": "integer"},
+        "warnings": {"type": "integer"}
+      }
+    }
+  }
+}
