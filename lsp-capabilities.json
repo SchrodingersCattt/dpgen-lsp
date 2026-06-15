@@ -1,18 +1,44 @@
 {
   "schema": "OpenQCLspCapabilities",
   "version": 1,
+  "id": "dpgen-lsp",
   "software": "dpgen",
+  "displayName": "DP-GEN",
+  "languageId": "dpgen",
+  "executable": "dpgen-lsp",
+  "defaultBranch": "main",
+  "filePatterns": [
+    "param.json",
+    "machine.json",
+    "*param*.json",
+    "*machine*.json"
+  ],
+  "maturity": "preview",
+  "blockingPolicy": {
+    "mode": "blocking",
+    "description": "Blocking diagnostics indicate JSON syntax, schema, path, or semantic issues that can prevent DP-GEN from launching or collecting usable data."
+  },
   "capabilities": [
-    "diagnostics",
-    "rich-diagnostics",
+    "agent-envelope",
+    "agent-json-cli",
+    "blocking-gate",
     "completion",
-    "hover",
-    "symbols",
+    "context",
+    "diagnostic-engine-v1",
+    "diagnostics",
     "fix-preview",
+    "hover",
     "llm-wiki",
-    "openqc-context"
+    "manifest",
+    "navigation",
+    "openqc-context",
+    "rich-diagnostics",
+    "routing",
+    "source-provenance",
+    "symbols"
   ],
   "agentCli": {
+    "command": "dpgen-lsp-tool",
     "operations": [
       "capabilities",
       "init",
@@ -25,5 +51,67 @@
     ],
     "jsonFormat": true,
     "failOnBlocking": true
-  }
+  },
+  "diagnosticSchema": "diagnostics/diagnostic-engine-v1.schema.json",
+  "wikiPaths": {
+    "plan": "docs/LLM-WIKI-PLAN.md",
+    "rawAssets": "raw/assets",
+    "entities": "wiki/entities",
+    "concepts": "wiki/concepts",
+    "synthesis": "wiki/synthesis",
+    "index": "index.md",
+    "log": "log.md"
+  },
+  "fixturePaths": {
+    "valid": [
+      "tests/fixtures/valid"
+    ],
+    "invalid": [
+      "tests/fixtures/invalid"
+    ],
+    "logs": [
+      "tests/fixtures/logs"
+    ]
+  },
+  "outputLogPatterns": [
+    "dpgen.log",
+    "dpdispatcher.log",
+    "record.dpgen",
+    "iter.*/00.train/*/lcurve.out",
+    "iter.*/01.model_devi/*/model_devi.out",
+    "iter.*/02.fp/task.*/log"
+  ],
+  "openqc": {
+    "registryId": "dpgen-lsp",
+    "repoName": "dpgen-lsp",
+    "contextContract": "DSLAuthoringContext",
+    "diagnosticEnvelope": "DiagnosticEnvelope/v1"
+  },
+  "sourceProvenance": [
+    {
+      "kind": "official_docs",
+      "label": "DP-GEN Example-of-param.json",
+      "url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+    },
+    {
+      "kind": "official_docs",
+      "label": "dpgen run param parameters",
+      "url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/param.html"
+    },
+    {
+      "kind": "official_docs",
+      "label": "DP-GEN Example of machine.json",
+      "url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+    },
+    {
+      "kind": "upstream_examples",
+      "label": "deepmodeling/dpgen examples/run",
+      "url": "https://github.com/deepmodeling/dpgen/tree/master/examples/run"
+    },
+    {
+      "kind": "structured_rules",
+      "label": "DP-GEN LSP docs-backed rule index",
+      "path": "src/dpgen_lsp/schema/dpgen_rules.json"
+    }
+  ]
 }
