@@ -63,6 +63,7 @@ target-version = "py39"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 addopts = "--cov=src/dpgen_lsp --cov-report=term-missing -v"
 
 [tool.coverage.run]

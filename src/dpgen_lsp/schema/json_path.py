@@ -15,17 +15,18 @@ class JsonPathMapper:
         self._parse()
 
     def _parse(self):
+        self._lines = self.text.splitlines()
         try:
             self._data = json.loads(self.text)
         except json.JSONDecodeError:
             self._data = None
             return
 
-        self._lines = self.text.splitlines()
         self._build_line_mapping()
 
     def _build_line_mapping(self):
         import re
+
         for line_no, raw_line in enumerate(self._lines):
             stripped = raw_line.strip()
             m = re.match(r'"([^"]+)"\s*:', stripped)
@@ -101,6 +102,7 @@ class JsonPathMapper:
 
 def _find_key_in_line(line: str) -> str:
     import re
+
     stripped = line.strip()
     m = re.match(r'"([^"]+)"\s*:', stripped)
     if m:

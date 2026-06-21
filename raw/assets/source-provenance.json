@@ -1,0 +1,31 @@
+{
+  "fetched_at": "2026-06-15T07:09:13+00:00",
+  "rule_index": "src/dpgen_lsp/schema/dpgen_rules.json",
+  "schema": "SourceProvenance/v1",
+  "sources": [
+    {
+      "final_url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html",
+      "id": "dpgen-run-example-param",
+      "label": "DP-GEN Example-of-param.json",
+      "sha256": "a2fb952e38b47873ac07cbd2710e0a1a61057c9b14637824726c12e17cff9218",
+      "status": 200,
+      "url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+    },
+    {
+      "final_url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/param.html",
+      "id": "dpgen-run-param",
+      "label": "dpgen run param parameters",
+      "sha256": "a83c0dd9eac8659863eb04e0d83658b2055975b086cfd63627f539a071590aee",
+      "status": 200,
+      "url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/param.html"
+    },
+    {
+      "final_url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html",
+      "id": "dpgen-run-example-machine",
+      "label": "DP-GEN Example of machine.json",
+      "sha256": "1f9043639a52569ba7799044e531500caa0f1942418322a5136a426cc49932e5",
+      "status": 200,
+      "url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+    }
+  ]
+}

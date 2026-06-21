@@ -1,0 +1,325 @@
+{
+  "$schema": "https://openqc.dev/schemas/lsp-doc-rules-v1.json",
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-15",
+  "software": "dpgen",
+  "pipeline": [
+    "official-docs-fetch",
+    "structured-schema-rules",
+    "source-provenance",
+    "tests",
+    "lsp-runtime"
+  ],
+  "sourceProvenance": [
+    {
+      "id": "dpgen-run-example-param",
+      "kind": "official_docs",
+      "label": "DP-GEN Example-of-param.json",
+      "url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+    },
+    {
+      "id": "dpgen-run-param",
+      "kind": "official_docs",
+      "label": "dpgen run param parameters",
+      "url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/param.html"
+    },
+    {
+      "id": "dpgen-run-example-machine",
+      "kind": "official_docs",
+      "label": "DP-GEN Example of machine.json",
+      "url": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+    },
+    {
+      "id": "dpgen-upstream-examples",
+      "kind": "upstream_examples",
+      "label": "deepmodeling/dpgen examples/run",
+      "url": "https://github.com/deepmodeling/dpgen/tree/master/examples/run"
+    }
+  ],
+  "workflows": {
+    "run": {
+      "root": "run_jdata",
+      "manualRef": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/param.html",
+      "fields": {
+        "type_map": {
+          "json_type": "array",
+          "list_item_type": "string",
+          "optional": false,
+          "doc": "Atom type names used by initial data, model training, exploration, and first-principles labeling.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "mass_map": {
+          "json_type": "array",
+          "list_item_type": "number",
+          "optional": true,
+          "doc": "Atomic masses aligned with type_map. Use one value per atom type when supplied.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "init_data_sys": {
+          "json_type": "array",
+          "list_item_type": "string",
+          "optional": false,
+          "doc": "Initial DeePMD training data directories used before active-learning iterations.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "sys_configs": {
+          "json_type": "array",
+          "list_item_type": "array",
+          "optional": false,
+          "doc": "System configuration file patterns used to create exploration tasks. The official examples use nested arrays of path globs.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "numb_models": {
+          "json_type": "integer",
+          "optional": true,
+          "default": 4,
+          "doc": "Number of Deep Potential models trained for model-deviation selection. Four models is the common DP-GEN setting.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "default_training_param": {
+          "json_type": "object",
+          "optional": false,
+          "doc": "DeePMD-kit training configuration shared by the model ensemble.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "model_devi_dt": {
+          "json_type": "number",
+          "optional": true,
+          "doc": "Exploration molecular-dynamics timestep used for model deviation tasks.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "model_devi_skip": {
+          "json_type": "integer",
+          "optional": true,
+          "doc": "Frame stride used when reading model-deviation trajectories.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "model_devi_f_trust_lo": {
+          "json_type": "number",
+          "optional": false,
+          "doc": "Lower force model-deviation threshold for trusted structures.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "model_devi_f_trust_hi": {
+          "json_type": "number",
+          "optional": false,
+          "doc": "Upper force model-deviation threshold for candidate first-principles labeling.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "model_devi_jobs": {
+          "json_type": "array",
+          "list_item_type": "object",
+          "optional": false,
+          "doc": "Exploration job definitions including system indices, temperatures, pressures, trajectory frequency, steps, and ensemble.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "fp_style": {
+          "json_type": "string",
+          "optional": false,
+          "doc": "First-principles labeling engine such as vasp, cp2k, pwscf, abacus, gaussian, siesta, pwmat, cpx, amber/diff, or custom.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "fp_task_max": {
+          "json_type": "integer",
+          "optional": true,
+          "doc": "Maximum number of first-principles labeling tasks selected in each iteration.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "fp_task_min": {
+          "json_type": "integer",
+          "optional": true,
+          "doc": "Minimum number of first-principles labeling tasks required to continue an iteration.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "fp_pp_path": {
+          "json_type": "string",
+          "optional": true,
+          "doc": "Directory containing first-principles pseudopotential files.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "fp_pp_files": {
+          "json_type": "array",
+          "list_item_type": "string",
+          "optional": true,
+          "doc": "Pseudopotential files aligned with type_map for plane-wave labeling engines.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "fp_incar": {
+          "json_type": "string",
+          "optional": true,
+          "doc": "VASP INCAR template used for first-principles labeling.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "fp_params": {
+          "json_type": "object",
+          "optional": true,
+          "doc": "Structured CP2K or engine-specific first-principles parameters.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "external_input_path": {
+          "json_type": "string",
+          "optional": true,
+          "doc": "Engine input template path used by external-template first-principles workflows.",
+          "manual_ref": "https://github.com/deepmodeling/dpgen/tree/master/examples/run"
+        }
+      },
+      "rules": {
+        "mass_map.lint": {
+          "field": "mass_map",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html",
+          "source_id": "dpgen-run-example-param"
+        },
+        "fp_pp_files.lint": {
+          "field": "fp_pp_files",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html",
+          "source_id": "dpgen-run-example-param"
+        },
+        "fp_task_max.lint": {
+          "field": "fp_task_max",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html",
+          "source_id": "dpgen-run-example-param"
+        },
+        "model_devi_f_trust_lo.lint": {
+          "field": "model_devi_f_trust_lo",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html",
+          "source_id": "dpgen-run-example-param"
+        },
+        "numb_models.lint": {
+          "field": "numb_models",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html",
+          "source_id": "dpgen-run-example-param"
+        },
+        "PRINT_LEVEL.lint": {
+          "field": "fp_params.GLOBAL.PRINT_LEVEL",
+          "manual_ref": "https://github.com/deepmodeling/dpgen/tree/master/examples/run",
+          "source_id": "dpgen-upstream-examples"
+        },
+        "STRESS_TENSOR.lint": {
+          "field": "fp_params.MOTION.PRINT.STRESS_TENSOR",
+          "manual_ref": "https://github.com/deepmodeling/dpgen/tree/master/examples/run",
+          "source_id": "dpgen-upstream-examples"
+        },
+        "path.init_data_sys": {
+          "field": "init_data_sys",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html",
+          "source_id": "dpgen-run-example-param"
+        },
+        "path.sys_configs": {
+          "field": "sys_configs",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html",
+          "source_id": "dpgen-run-example-param"
+        }
+      }
+    },
+    "simplify": {
+      "root": "simplify_jdata",
+      "manualRef": "https://docs.deepmodeling.com/projects/dpgen/en/latest/simplify/simplify.html",
+      "fields": {
+        "pick_data": {
+          "json_type": "array",
+          "list_item_type": "string",
+          "optional": false,
+          "doc": "Input data candidates used by dpgen simplify.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/simplify/simplify.html"
+        },
+        "iter_pick_number": {
+          "json_type": "integer",
+          "optional": false,
+          "doc": "Number of configurations to pick in each simplify iteration.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/simplify/simplify.html"
+        },
+        "model_devi_f_trust_lo": {
+          "json_type": "number",
+          "optional": true,
+          "doc": "Lower force model-deviation threshold for simplify filtering.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/simplify/simplify.html"
+        },
+        "model_devi_f_trust_hi": {
+          "json_type": "number",
+          "optional": true,
+          "doc": "Upper force model-deviation threshold for simplify filtering.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/simplify/simplify.html"
+        }
+      },
+      "rules": {}
+    }
+  },
+  "machine": {
+    "root": "machine_jdata",
+    "manualRef": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html",
+    "fields": {
+      "api_version": {
+        "json_type": "string",
+        "optional": true,
+        "doc": "Machine JSON API version used by DPDispatcher-backed DP-GEN workflows.",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+      },
+      "train": {
+        "json_type": "array",
+        "list_item_type": "object",
+        "optional": false,
+        "doc": "Training task environments. DP-GEN run machine.json is composed of train, model_devi, and fp parts.",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+      },
+      "model_devi": {
+        "json_type": "array",
+        "list_item_type": "object",
+        "optional": false,
+        "doc": "Exploration/model-deviation task environments.",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+      },
+      "fp": {
+        "json_type": "array",
+        "list_item_type": "object",
+        "optional": false,
+        "doc": "First-principles labeling task environments.",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+      },
+      "machine": {
+        "json_type": "object",
+        "optional": false,
+        "doc": "DPDispatcher machine block that describes batch system, context, and remote/local roots.",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+      },
+      "resources": {
+        "json_type": "object",
+        "optional": false,
+        "doc": "Task resources such as node count, CPU/GPU count, queue, and group size.",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+      },
+      "scass_type": {
+        "json_type": "string",
+        "optional": true,
+        "doc": "Bohrium machine flavor in remote_profile.input_data.",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html"
+      }
+    },
+    "rules": {
+      "machine.section.missing": {
+        "field": "train/model_devi/fp",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html",
+        "source_id": "dpgen-run-example-machine"
+      },
+      "machine.section.type": {
+        "field": "train/model_devi/fp",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html",
+        "source_id": "dpgen-run-example-machine"
+      },
+      "machine.train.scass_type": {
+        "field": "remote_profile.input_data.scass_type",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html",
+        "source_id": "dpgen-run-example-machine"
+      },
+      "machine.model_devi.scass_type": {
+        "field": "remote_profile.input_data.scass_type",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html",
+        "source_id": "dpgen-run-example-machine"
+      },
+      "machine.fp.scass_type": {
+        "field": "remote_profile.input_data.scass_type",
+        "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-machine.html",
+        "source_id": "dpgen-run-example-machine"
+      }
+    }
+  }
+}

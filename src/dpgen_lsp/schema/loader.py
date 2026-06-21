@@ -6,6 +6,8 @@ import json
 from dataclasses import dataclass, field
 from typing import Any
 
+from .official_rules import machine_index, workflow_index
+
 _SCHEMA_CACHE: dict[str, SchemaTree] = {}
 
 DPGEN_WORKFLOWS = {
@@ -88,13 +90,11 @@ class SchemaTree:
         try:
             module = _import_optional(info["module"])
             if module is None:
-                self.root = _fallback_schema_root(self.workflow)
-                self._index_node(self.root, "")
+                self._load_static()
                 return
             func = getattr(module, info["func"], None)
             if func is None:
-                self.root = _fallback_schema_root(self.workflow)
-                self._index_node(self.root, "")
+                self._load_static()
                 return
             arg = func()
             root_name = arg.name
@@ -102,8 +102,41 @@ class SchemaTree:
             self.root.name = root_name
             self.root.path = ""
             self._index_node(self.root, "")
-        except Exception as e:
-            raise RuntimeError(f"Failed to load dpgen arginfo: {e}") from e
+        except Exception:
+            self._load_static()
+
+    def _load_static(self) -> None:
+        index = workflow_index(self.workflow)
+        fields = index.get("fields", {})
+        if not fields:
+            self.root = _fallback_schema_root(self.workflow)
+            self._index_node(self.root, "")
+            return
+
+        root_name = index.get("root", f"{self.workflow}_jdata")
+        root = SchemaNode(
+            name=root_name,
+            json_type="object",
+            optional=False,
+            doc=f"Static DP-GEN {self.workflow} schema derived from official documentation.",
+            path="",
+        )
+        for name, meta in fields.items():
+            node = SchemaNode(
+                name=name,
+                json_type=str(meta.get("json_type", "string")),
+                default=meta.get("default"),
+                optional=bool(meta.get("optional", True)),
+                doc=str(meta.get("doc", "")),
+                alias=list(meta.get("alias", []) or []),
+                is_list=str(meta.get("json_type", "")) == "array",
+                list_item_type=str(meta.get("list_item_type", "")),
+                variant_tags=list(meta.get("variant_tags", []) or []),
+                path=name,
+            )
+            root.sub_fields[name] = node
+        self.root = root
+        self._index_node(root, "")
 
     def _convert_argument(self, arg: Any, parent_path: str = "") -> SchemaNode:
         name = arg.name if hasattr(arg, "name") else ""
@@ -225,27 +258,31 @@ class SchemaTree:
 
         This compatibility wrapper is used by feature providers.  Variant
         fields are indexed as their argument names, so exact lookup is the
-        desired behavior for hover and references.
+        desired behavior for hover and references. Static rule indexes also
+        support a final-component fallback for nested JSON paths.
         """
-        return self.lookup(json_path)
+        if not json_path:
+            return self.root
+        node = self.lookup(json_path)
+        if node is not None:
+            return node
+        return self.lookup(json_path.rsplit(".", 1)[-1])
 
     def find_best_node(self, json_path: str) -> SchemaNode | None:
         """Find the best schema node for completion at a JSON path.
 
-        Completion normally needs children of the current object.  If an exact
+        Completion normally needs children of the current object. If an exact
         path is not indexed, walk upward through dotted path components and
         finally fall back to the root node.
         """
         if not json_path:
             return self.root
-
-        path = json_path
-        while path:
-            node = self.lookup(path)
+        parts = json_path.split(".")
+        while parts:
+            node = self.find_node(".".join(parts))
             if node is not None:
                 return node
-            path = path.rsplit(".", 1)[0] if "." in path else ""
-
+            parts.pop()
         return self.root
 
     def children_of(self, json_path: str) -> list[SchemaNode]:
@@ -266,11 +303,7 @@ class SchemaTree:
                 for name, child in node.sub_fields.items():
                     props[name] = _to_json_schema(child)
                 result["properties"] = props
-                required = [
-                    name
-                    for name, child in node.sub_fields.items()
-                    if not child.optional
-                ]
+                required = [name for name, child in node.sub_fields.items() if not child.optional]
                 if required:
                     result["required"] = required
                 for var in node.sub_variants:
@@ -279,8 +312,7 @@ class SchemaTree:
                             "type": "object",
                             "description": f"variant tag: {tag_name}",
                             "properties": {
-                                k: _to_json_schema(v)
-                                for k, v in tag_node.sub_fields.items()
+                                k: _to_json_schema(v) for k, v in tag_node.sub_fields.items()
                             },
                         }
             elif node.json_type == "array":
@@ -304,6 +336,7 @@ def load_schema_tree(workflow: str = "run") -> SchemaTree:
 def _import_optional(module_name: str):
     try:
         from importlib import import_module
+
         return import_module(module_name)
     except Exception:
         return None
@@ -437,6 +470,36 @@ def _fallback_schema_root(workflow: str) -> SchemaNode:
         add("labeled", "boolean", "Whether pick_data is already labeled.", default=False)
 
     return root
+
+
+def load_machine_schema_tree() -> SchemaTree:
+    schema = SchemaTree("run")
+    index = machine_index()
+    fields = index.get("fields", {})
+    root = SchemaNode(
+        name=str(index.get("root", "machine_jdata")),
+        json_type="object",
+        optional=False,
+        doc="Static DP-GEN machine.json schema derived from official documentation.",
+        path="",
+    )
+    for name, meta in fields.items():
+        root.sub_fields[name] = SchemaNode(
+            name=name,
+            json_type=str(meta.get("json_type", "string")),
+            default=meta.get("default"),
+            optional=bool(meta.get("optional", True)),
+            doc=str(meta.get("doc", "")),
+            alias=list(meta.get("alias", []) or []),
+            is_list=str(meta.get("json_type", "")) == "array",
+            list_item_type=str(meta.get("list_item_type", "")),
+            path=name,
+        )
+    schema.workflow = "machine"
+    schema.nodes = {}
+    schema.root = root
+    schema._index_node(root, "")
+    return schema
 
 
 def detect_file_type(text: str) -> str:
