@@ -187,10 +187,15 @@ def _validate_machine_config(data: dict, text: str) -> list[dict]:
 
     for section_name in ("train", "model_devi", "fp"):
         section_data = data.get(section_name)
-        if not isinstance(section_data, list):
+        tasks: list[dict] = []
+        if isinstance(section_data, dict):
+            tasks = [section_data]  # canonical
+        elif isinstance(section_data, list):
+            tasks = section_data    # deprecated list-form—warning already emitted by _lint_machine_sections
+        else:
             continue
 
-        for idx, task in enumerate(section_data):
+        for idx, task in enumerate(tasks):
             if not isinstance(task, dict):
                 continue
             machine_data = task.get("machine")
@@ -376,13 +381,18 @@ def _lint_machine_type_whitelist(data: dict, text: str) -> list[dict]:
     # Track which scass_type occurrences we've already reported
     used_lines: set[int] = set()
 
-    # machine.json: train/model_devi/fp are lists of task configs
+    # machine.json: train/model_devi/fp are dict (canonical) or list (deprecated)
     for section_name in ("train", "model_devi", "fp"):
         section_data = data.get(section_name)
-        if not isinstance(section_data, list):
+        tasks: list[dict] = []
+        if isinstance(section_data, dict):
+            tasks = [section_data]
+        elif isinstance(section_data, list):
+            tasks = section_data
+        else:
             continue
 
-        for task in section_data:
+        for task in tasks:
             if not isinstance(task, dict):
                 continue
             # Check machine.remote_profile.input_data.scass_type
@@ -437,29 +447,64 @@ def _lint_machine_sections(data: dict, text: str) -> list[dict]:
                     severity="error",
                     code="machine.section.missing",
                     category="schema",
-                    fix_hints=[f"Add top-level '{section_name}': [] section"],
+                    fix_hints=[f"Add top-level '{section_name}': {{}} section"],
                     manual_ref=manual_ref_for("machine", code="machine.section.missing"),
-                    expected="top-level list section",
+                    expected="dict (canonical) or list (deprecated compat)",
                     actual="missing",
                 )
             )
             continue
-        if not isinstance(data.get(section_name), list):
+        section_val = data.get(section_name)
+        if isinstance(section_val, dict):
+            # canonical format: {"train": {"command": ..., "machine": ..., "resources": ...}}
+            continue
+        if isinstance(section_val, list):
+            # deprecated list-form for backward compat — warn, non-blocking
             line = _find_key_line(text, section_name)
             diagnostics.append(
                 _diagnostic(
                     line,
                     0,
-                    f"machine.json section '{section_name}' must be a list of task environments.",
-                    severity="error",
-                    code="machine.section.type",
-                    category="type/value",
-                    fix_hints=[f"Change '{section_name}' to an array of task objects"],
-                    manual_ref=manual_ref_for("machine", code="machine.section.type"),
-                    expected="array",
-                    actual=type(data.get(section_name)).__name__,
+                    f"machine.json section '{section_name}' is a list. "
+                    "List-form is deprecated in DP-GEN; use a dict task object instead "
+                    "(e.g. {{\"command\": ..., \"machine\": ..., \"resources\": ...}}). "
+                    "DP-GEN still converts lists via convert_mdata() for backward compat, "
+                    "but external tooling validates the canonical dict schema.",
+                    severity="warning",
+                    code="machine.section.deprecated_list",
+                    category="best-practice/deprecation",
+                    fix_hints=[
+                        f"Change '{section_name}' from a list to a single dict task object"
+                    ],
+                    manual_ref=manual_ref_for(
+                        "machine", code="machine.section.deprecated_list"
+                    ),
+                    expected="dict",
+                    actual="list (deprecated)",
+                    blocking=False,
                 )
             )
+            continue
+        # scalar or other type
+        line = _find_key_line(text, section_name)
+        diagnostics.append(
+            _diagnostic(
+                line,
+                0,
+                f"machine.json section '{section_name}' must be a dict (canonical) "
+                "or list (deprecated) of task environments.",
+                severity="error",
+                code="machine.section.type",
+                category="type/value",
+                fix_hints=[
+                    f"Change '{section_name}' to a dict task object: "
+                    '{"command": "...", "machine": {...}, "resources": {...}}'
+                ],
+                manual_ref=manual_ref_for("machine", code="machine.section.type"),
+                expected="dict or list",
+                actual=type(section_val).__name__,
+            )
+        )
     return diagnostics
 
 

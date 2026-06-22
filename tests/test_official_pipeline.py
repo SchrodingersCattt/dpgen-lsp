@@ -67,14 +67,45 @@ def test_docs_backed_diagnostics_include_manual_ref(tmp_path: Path):
 def test_machine_sections_are_validated_without_dpdispatcher():
     from dpgen_lsp.features.diagnostic import DiagnosticProvider
 
-    text = json.dumps({"api_version": "1.0", "train": {}})
+    # dict is canonical format — no type error expected
+    text_dict = json.dumps({"api_version": "1.0", "train": {}, "model_devi": {}, "fp": {}})
+    diags_dict = DiagnosticProvider().get_diagnostics(text_dict)
+    by_code_dict = {item["code"]: item for item in diags_dict}
 
-    diagnostics = DiagnosticProvider().get_diagnostics(text)
-    by_code = {item["code"]: item for item in diagnostics}
+    # "machine.section.type" should NOT fire for canonical dict
+    assert "machine.section.type" not in by_code_dict
 
-    assert "machine.section.type" in by_code
-    assert "machine.section.missing" in by_code
-    assert by_code["machine.section.type"]["manual_ref"].endswith("example-of-machine.html")
+    # missing section still detected
+    text_missing = json.dumps({"api_version": "1.0", "train": {}})
+    diags_missing = DiagnosticProvider().get_diagnostics(text_missing)
+    by_code_missing = {item["code"]: item for item in diags_missing}
+
+    assert "machine.section.missing" in by_code_missing
+    assert by_code_missing["machine.section.missing"]["manual_ref"].endswith(
+        "example-of-machine.html"
+    )
+
+    # scalar (non-dict, non-list) section should still error
+    text_bad = json.dumps({"api_version": "1.0", "train": {}, "model_devi": {}, "fp": "bad"})
+    diags_bad = DiagnosticProvider().get_diagnostics(text_bad)
+    by_code_bad = {item["code"]: item for item in diags_bad}
+
+    assert "machine.section.type" in by_code_bad
+    assert by_code_bad["machine.section.type"]["manual_ref"].endswith("example-of-machine.html")
+
+    # deprecated list-form should produce a warning (non-blocking)
+    text_list = json.dumps({
+        "api_version": "1.0",
+        "train": [{"command": "dp", "machine": {}, "resources": {}}],
+        "model_devi": [{"command": "lmp", "machine": {}, "resources": {}}],
+        "fp": [{"command": "vasp_std", "machine": {}, "resources": {}}],
+    })
+    diags_list = DiagnosticProvider().get_diagnostics(text_list)
+    by_code_list = {item["code"]: item for item in diags_list}
+
+    assert "machine.section.deprecated_list" in by_code_list
+    assert by_code_list["machine.section.deprecated_list"]["blocking"] is False
+    assert by_code_list["machine.section.deprecated_list"]["severity"] == "warning"
 
 
 def test_raw_official_docs_snapshot_matches_rule_sources():
