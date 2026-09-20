@@ -15,6 +15,7 @@ from ..schema.loader import (
     DPGEN_IMPORT_MAP,
 )
 from ..schema.official_rules import manual_ref_for
+from .committee import validate as validate_committee
 
 # PR4: Bohrium machine type whitelist
 KNOWN_BOHRIUM_MACHINES = {
@@ -142,6 +143,18 @@ class DiagnosticProvider:
 
             # PR2: CP2K FP semantic lint
             diagnostics.extend(_lint_cp2k_fp(data, text))
+            for issue in validate_committee(data):
+                diagnostics.append(
+                    _diagnostic(
+                        _find_key_line(text, "default_training_param"),
+                        0,
+                        issue["message"],
+                        severity="error",
+                        code=issue["code"],
+                        category="schema/committee",
+                        manual_ref=manual_ref_for("run"),
+                    )
+                )
 
         # General lint checks
         diagnostics.extend(_lint_checks(data, text))

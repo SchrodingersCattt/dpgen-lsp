@@ -52,6 +52,7 @@ MACHINE_IMPORT_MAP = {
 class SchemaNode:
     name: str
     json_type: str
+    json_types: list[str] = field(default_factory=list)
     default: Any = None
     optional: bool = True
     doc: str = ""
@@ -125,6 +126,7 @@ class SchemaTree:
             node = SchemaNode(
                 name=name,
                 json_type=str(meta.get("json_type", "string")),
+                json_types=list(meta.get("json_types", []) or []),
                 default=meta.get("default"),
                 optional=bool(meta.get("optional", True)),
                 doc=str(meta.get("doc", "")),
@@ -315,11 +317,11 @@ class SchemaTree:
                                 k: _to_json_schema(v) for k, v in tag_node.sub_fields.items()
                             },
                         }
-            elif node.json_type == "array":
+            elif node.json_type == "array" or "array" in node.json_types:
                 result["type"] = "array"
                 result["items"] = {"type": node.list_item_type}
             else:
-                result["type"] = node.json_type
+                result["type"] = node.json_types or node.json_type
             if not node.optional:
                 result["$$required"] = True
             return result

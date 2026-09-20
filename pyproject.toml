@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dpgen-lsp"
-version = "0.0.1"
+version = "0.1.2"
 description = "Language Server Protocol and CLI toolkit for DP-GEN input files"
 readme = "README.md"
 license = {text = "MIT"}

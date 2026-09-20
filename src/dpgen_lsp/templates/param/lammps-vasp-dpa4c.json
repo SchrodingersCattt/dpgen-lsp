@@ -1,0 +1,28 @@
+{
+  "type_map": ["H", "O"],
+  "mass_map": [1.008, 15.999],
+  "init_data_sys": ["/path/to/deepmd"],
+  "sys_configs": [["/path/to/POSCAR"]],
+  "numb_models": 4,
+  "train_backend": "pytorch-exportable",
+  "model_format": "pt2",
+  "default_training_param": {
+    "model": {
+      "type_map": ["H", "O"],
+      "descriptor": {"type": "dpa4c", "rcut": 6.0},
+      "fitting_net": {"type": "ener"}
+    },
+    "training": {"numb_steps": 1000}
+  },
+  "model_devi_dt": 0.002,
+  "model_devi_skip": 0,
+  "model_devi_f_trust_lo": 0.05,
+  "model_devi_f_trust_hi": 0.15,
+  "model_devi_jobs": [{"sys_idx": [0], "temps": [300], "trj_freq": 10, "nsteps": 100, "ensemble": "nvt"}],
+  "fp_style": "vasp",
+  "fp_task_min": 1,
+  "fp_task_max": 10,
+  "fp_pp_path": "/path/to/potcars",
+  "fp_pp_files": ["POTCAR_H", "POTCAR_O"],
+  "fp_incar": "/path/to/INCAR"
+}

@@ -38,4 +38,11 @@ def hover_contents(text: str, line: int, character: int) -> str | None:
         parts.append("")
         parts.append(f"Aliases: {', '.join(node.alias)}")
 
+    if node.name == "default_training_param":
+        parts.extend(["", "DP-GEN 0.14.0 accepts an object or a list of exactly `numb_models` committee objects.", "Committee members must agree on type map, cutoff, output class, fparam/aparam dimensions, and PT2 lower kind."])
+    elif node.name == "train_backend":
+        parts.extend(["", "DPA4 uses `pytorch`; DPA4C uses `pytorch-exportable` (alias `pt-expt`)."])
+    elif node.name == "model_format":
+        parts.extend(["", "LAMMPS model deviation for DPA4/DPA4C uses `pt2`; `pte` is not supported by LAMMPS."])
+
     return "\n".join(parts)

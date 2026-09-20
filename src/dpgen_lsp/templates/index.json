@@ -14,6 +14,33 @@
             "default": true
         },
         {
+            "key": "lammps-vasp-dpa4",
+            "kind": "param",
+            "resource": "param/lammps-vasp-dpa4.json",
+            "fp_style": "vasp",
+            "md_engine": "lammps",
+            "description": "LAMMPS + VASP with a DPA4 PyTorch committee",
+            "upstream_path": "dpgen 0.14.0 DPA4 model-format contract"
+        },
+        {
+            "key": "lammps-vasp-dpa4c",
+            "kind": "param",
+            "resource": "param/lammps-vasp-dpa4c.json",
+            "fp_style": "vasp",
+            "md_engine": "lammps",
+            "description": "LAMMPS + VASP with a DPA4C PyTorch-exportable committee",
+            "upstream_path": "dpgen 0.14.0 DPA4C model-format contract"
+        },
+        {
+            "key": "lammps-vasp-cross-architecture",
+            "kind": "param",
+            "resource": "param/lammps-vasp-cross-architecture.json",
+            "fp_style": "vasp",
+            "md_engine": "lammps",
+            "description": "LAMMPS + VASP cross-architecture committee",
+            "upstream_path": "dpgen 0.14.0 committee compatibility contract"
+        },
+        {
             "key": "lammps-pwscf",
             "kind": "param",
             "resource": "param/lammps-pwscf.json",

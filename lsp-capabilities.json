@@ -23,6 +23,8 @@
     "agent-json-cli",
     "blocking-gate",
     "completion",
+    "dpa4-dpa4c",
+    "cross-architecture-committee",
     "context",
     "diagnostic-engine-v1",
     "diagnostics",

@@ -85,9 +85,9 @@ def _completion_snippet(name: str, node) -> str:
 
 def _generic_completions(text: str, token: str) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
-    for kw in ("type_map", "mass_map", "numb_models", "init_data_sys",
+    for kw in ("type_map", "mass_map", "numb_models", "init_data_prefix", "init_data_sys",
                 "sys_configs", "model_devi_jobs", "fp_style", "fp_task_max",
-                "fp_task_min", "default_training_param", "model_devi_dt",
+                "fp_task_min", "default_training_param", "train_backend", "model_format", "model_devi_dt",
                 "model_devi_skip", "model_devi_f_trust_lo", "model_devi_f_trust_hi"):
         if not token or token in kw:
             items.append({"label": kw, "kind": 9, "detail": "dpgen parameter"})

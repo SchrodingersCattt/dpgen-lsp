@@ -9,6 +9,9 @@ Language Server Protocol implementation for DP-GEN (Deep Potential GENerator) in
 - **Hover documentation** for dpgen parameters from official arginfo documentation
 - **Code formatting** for consistent JSON structure
 - Support for `param.json` and `machine.json` input files
+- DP-GEN 0.14.0 DPA4/DPA4C backend and `pt2` checks
+- Cross-architecture committees via `default_training_param` lists, including
+  model-signature, `model_dict`, and `shared_dict` compatibility checks
 
 ## Installation
 
@@ -40,6 +43,10 @@ This package provides the language server executable. To use it in an editor, co
 
 - **dpgen run**: `param.json` with type_map, training, model_devi, fp settings
 - **dpgen simplify**: `param.json` with pick_data, iterative selection parameters
+
+DP-GEN 0.14.0 committee members may use different architectures, but must share
+type maps, cutoffs, output classes, fparam/aparam dimensions, and PT2 lower kind.
+DPA4 and DPA4C cannot be mixed because they require different DeePMD backends.
 
 ## Supported FP Engines
 

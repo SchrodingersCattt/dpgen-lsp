@@ -62,6 +62,18 @@
           "doc": "Initial DeePMD training data directories used before active-learning iterations.",
           "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
         },
+        "init_data_prefix": {
+          "json_type": "string",
+          "optional": true,
+          "doc": "Prefix for initial training data paths.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "sys_configs_prefix": {
+          "json_type": "string",
+          "optional": true,
+          "doc": "Prefix for exploration structure paths.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
         "sys_configs": {
           "json_type": "array",
           "list_item_type": "array",
@@ -78,9 +90,22 @@
         },
         "default_training_param": {
           "json_type": "object",
+          "json_types": ["object", "array"],
           "optional": false,
-          "doc": "DeePMD-kit training configuration shared by the model ensemble.",
+          "doc": "DeePMD-kit training configuration, or a list of one object per committee member for cross-architecture committees.",
           "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/run/example-of-param.html"
+        },
+        "train_backend": {
+          "json_type": "string",
+          "optional": true,
+          "doc": "DeePMD backend: tensorflow, pytorch, pytorch-exportable/pt-expt, or jax.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/_modules/dpgen/generator/arginfo.html"
+        },
+        "model_format": {
+          "json_type": "string",
+          "optional": true,
+          "doc": "Frozen model format. LAMMPS DPA4/DPA4C model deviation uses pt2.",
+          "manual_ref": "https://docs.deepmodeling.com/projects/dpgen/en/latest/_modules/dpgen/generator/arginfo.html"
         },
         "model_devi_dt": {
           "json_type": "number",
